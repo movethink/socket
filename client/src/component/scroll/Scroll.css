@@ -1,0 +1,10 @@
+.box{
+    width:1200px;
+    height:600px;
+    overflow:auto;
+}
+
+.middle{
+    overflow:hidden;
+    width:100%;
+}
