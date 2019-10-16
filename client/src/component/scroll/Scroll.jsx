@@ -27,7 +27,7 @@ class Scroll extends React.Component {
         return list
     }
 
-    onScroll = () => {
+    onScroll = (e) => {
         console.log("scrolled")
         this.setState({})
     }
@@ -72,31 +72,11 @@ class Scroll extends React.Component {
         if (!this.boxEle) {
             return null
         }
-        // const { topHeight, middleHeight, bottomHeight } = this.setHeight()
-        const { data } = this.state
-        let topHeight = 0
-        let middleHeight = 0
-        let bottomHeight = 0
-        let height = this.boxEle.offsetHeight
-        let startIndex = Math.floor(this.boxEle.scrollTop / this.baseH)
-        let viewDataLen = Math.ceil(height / this.baseH) + 1
-
-        let end = false
-        if (startIndex + viewDataLen >= data.length) {
-            viewDataLen -= 1
-            end = true
-        }
-
-        let newData = data.slice(startIndex, startIndex + viewDataLen)
-
-        const totalHeight = data.length * this.baseH
-        topHeight = startIndex * this.baseH
-        middleHeight = height + (end ? 0 : this.baseH)
-        bottomHeight = totalHeight - topHeight - middleHeight
+        const { topHeight, middleHeight, bottomHeight } = this.setHeight()
         return [
             <div className="top" key="top" style={{ height: `${topHeight}px` }}></div>,
             <div className="middle" key="middle" style={{ height: `${middleHeight}px` }}>
-                {newData.map((item, index) => {
+                {this.list.map((item, index) => {
                     let bgColor = "#fff"
                     if (index % 2 === 0) {
                         bgColor = "#ccc"
