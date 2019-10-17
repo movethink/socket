@@ -8,7 +8,8 @@ class Scroll extends React.Component {
             data: [],
         }
         this.list = []
-        this.baseH = 40
+        this.baseH = 30
+        this.canScroll = true
     }
 
     componentDidMount() {
@@ -27,9 +28,35 @@ class Scroll extends React.Component {
         return list
     }
 
-    onScroll = (e) => {
+    // 节流函数
+    throttle = (fn, time = 50) => {
+        let nowTime
+        let lastTime
+        return function(...args) {
+            nowTime = +new Date()
+            if (!lastTime || nowTime - lastTime >= time) {
+                fn.call(this, ...args)
+                lastTime = nowTime
+            }
+        }
+    }
+
+    // 防抖函数
+    debounce(fn, time = 50) {
+        let timer
+        return function(...args) {
+            if (timer) {
+                clearTimeout(timer)
+                timer = null
+            }
+            timer = setTimeout(fn.bind(this, ...args), time)
+        }
+    }
+
+    onScroll = e => {
         console.log("scrolled")
         this.setState({})
+        // this.debounce(this.setState({}), 1000)
     }
 
     setHeight = () => {
@@ -74,8 +101,16 @@ class Scroll extends React.Component {
         }
         const { topHeight, middleHeight, bottomHeight } = this.setHeight()
         return [
-            <div className="top" key="top" style={{ height: `${topHeight}px` }}></div>,
-            <div className="middle" key="middle" style={{ height: `${middleHeight}px` }}>
+            <div
+                className="top"
+                key="top"
+                style={{ height: `${topHeight}px` }}
+            ></div>,
+            <div
+                className="middle"
+                key="middle"
+                style={{ height: `${middleHeight}px`, overflow: "hidden" }}
+            >
                 {this.list.map((item, index) => {
                     let bgColor = "#fff"
                     if (index % 2 === 0) {
@@ -84,7 +119,10 @@ class Scroll extends React.Component {
                     return (
                         <div
                             key={index}
-                            style={{ height: this.baseH + "px",backgroundColor: bgColor, }}
+                            style={{
+                                height: this.baseH + "px",
+                                backgroundColor: bgColor,
+                            }}
                         >
                             {item} -> age
                         </div>
@@ -107,10 +145,9 @@ class Scroll extends React.Component {
                 ref={this.setRef}
                 className="box"
                 onScroll={this.onScroll}
+                style={{ height: "600px", overflow: "auto" }}
             >
-            {
-                this.renderChild()
-            }
+                {this.renderChild()}
             </div>
         )
     }
