@@ -118,7 +118,7 @@ class Scroll extends React.Component {
                     }
                     return (
                         <div
-                            key={index}
+                            key={item}
                             style={{
                                 height: this.baseH + "px",
                                 backgroundColor: bgColor,
