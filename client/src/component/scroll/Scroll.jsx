@@ -29,14 +29,18 @@ class Scroll extends React.Component {
     }
 
     // 节流函数
-    throttle = (fn, time = 50) => {
-        let nowTime
-        let lastTime
-        return function(...args) {
-            nowTime = +new Date()
-            if (!lastTime || nowTime - lastTime >= time) {
-                fn.call(this, ...args)
-                lastTime = nowTime
+    throttling(fn, wait, maxTimelong) {
+        var timeout = null,
+            startTime = Date.parse(new Date())
+
+        return function() {
+            if (timeout !== null) clearTimeout(timeout)
+            var curTime = Date.parse(new Date())
+            if (curTime - startTime >= maxTimelong) {
+                fn()
+                startTime = curTime
+            } else {
+                timeout = setTimeout(fn, wait)
             }
         }
     }
@@ -55,7 +59,15 @@ class Scroll extends React.Component {
 
     onScroll = e => {
         console.log("scrolled")
-        this.setState({})
+        this.throttling(
+            () => {
+                this.setState()
+                console.log("start scroll")
+            },
+            300,
+            1000
+        )
+        // this.setState({})S
         // this.debounce(this.setState({}), 1000)
     }
 
